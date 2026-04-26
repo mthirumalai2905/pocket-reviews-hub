@@ -38,11 +38,8 @@ export const Route = createRootRoute({
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "Pocket Reviews" },
       { name: "twitter:title", content: "Pocket Reviews" },
-      { name: "description", content: "Pocket Reviews Hub is a modern, mobile-friendly review blog for budget products." },
-      { property: "og:description", content: "Pocket Reviews Hub is a modern, mobile-friendly review blog for budget products." },
-      { name: "twitter:description", content: "Pocket Reviews Hub is a modern, mobile-friendly review blog for budget products." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e0ea453f-69fe-46b5-947f-f202f85b1e42/id-preview-2bab6661--c8405d15-919f-4a05-9942-7c7177824a4f.lovable.app-1777181587560.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e0ea453f-69fe-46b5-947f-f202f85b1e42/id-preview-2bab6661--c8405d15-919f-4a05-9942-7c7177824a4f.lovable.app-1777181587560.png" },
+      { property: "og:description", content: "Pocket Reviews is a modern, mobile-friendly review blog for budget products." },
+      { name: "twitter:description", content: "Pocket Reviews is a modern, mobile-friendly review blog for budget products." },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
