@@ -73,7 +73,7 @@ function HomePage() {
             </Link>
 
             <h1 className="font-display mt-6 text-[44px] leading-[1.02] md:text-7xl lg:text-[88px] font-medium tracking-[-0.03em] text-gradient">
-              Buy smarter.<br className="hidden md:block" /> Spend less.
+              Buy <span className="font-display-italic text-accent">smarter</span>.<br className="hidden md:block" /> Spend less.
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed">
               Honest, hands-on reviews of the best products under{" "}
