@@ -3,7 +3,7 @@ import { ArrowRight, BadgeCheck, IndianRupee, Sparkles, Star, TrendingUp } from 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ReviewCard } from "@/components/review-card";
-import { reviews } from "@/data/reviews";
+import { getPublishedReviews } from "@/lib/review-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -50,6 +50,7 @@ const features = [
 ];
 
 function HomePage() {
+  const reviews = getPublishedReviews();
   const featured = reviews.slice(0, 3);
 
   return (

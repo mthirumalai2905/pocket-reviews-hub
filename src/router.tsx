@@ -1,4 +1,5 @@
 import { createRouter, useRouter } from "@tanstack/react-router";
+import { ClerkProvider } from "@clerk/clerk-react";
 import { routeTree } from "./routeTree.gen";
 
 function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
@@ -55,12 +56,22 @@ function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => vo
 }
 
 export const getRouter = () => {
+  const env = import.meta.env as Record<string, string | undefined>;
+  const publishableKey = env.VITE_CLERK_PUBLISHABLE_KEY ?? env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
   const router = createRouter({
     routeTree,
-    context: {},
+    context: {
+      clerkProviderProps: {
+        publishableKey,
+      },
+    },
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
     defaultErrorComponent: DefaultErrorComponent,
+    Wrap: ({ children }) => (
+      <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>
+    ),
   });
 
   return router;

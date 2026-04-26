@@ -1,7 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowRight, Menu, Search, X } from "lucide-react";
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 import { ThemeToggle } from "./theme-toggle";
+import { isAdminEmail } from "@/lib/auth";
 
 const links = [
   { to: "/", label: "Home" },
@@ -12,6 +14,8 @@ const links = [
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { user } = useUser();
+  const isAdmin = isAdminEmail(user?.primaryEmailAddress?.emailAddress);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -78,6 +82,27 @@ export function SiteHeader() {
               <Search className="h-4 w-4" />
             </button>
             <ThemeToggle />
+            <SignedOut>
+              <Link
+                to="/auth"
+                className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-medium"
+              >
+                Sign in
+              </Link>
+            </SignedOut>
+            <SignedIn>
+              {isAdmin ? (
+                <Link
+                  to="/admin"
+                  className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-medium"
+                >
+                  Admin
+                </Link>
+              ) : null}
+              <div className="hidden sm:flex">
+                <UserButton />
+              </div>
+            </SignedIn>
             <Link
               to="/reviews"
               className="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-foreground text-background pl-3.5 pr-3 py-1.5 text-sm font-semibold hover:opacity-90 transition-opacity group"
@@ -122,6 +147,26 @@ export function SiteHeader() {
             >
               Browse all reviews <ArrowRight className="h-4 w-4" />
             </Link>
+            <SignedOut>
+              <Link
+                to="/auth"
+                onClick={() => setOpen(false)}
+                className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl border border-input px-4 py-3 font-semibold"
+              >
+                Sign in
+              </Link>
+            </SignedOut>
+            <SignedIn>
+              {isAdmin ? (
+                <Link
+                  to="/admin"
+                  onClick={() => setOpen(false)}
+                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl border border-input px-4 py-3 font-semibold"
+                >
+                  Open admin
+                </Link>
+              ) : null}
+            </SignedIn>
           </nav>
         </div>
       )}

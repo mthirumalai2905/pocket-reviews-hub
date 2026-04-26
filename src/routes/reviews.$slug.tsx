@@ -3,27 +3,25 @@ import { ArrowLeft, Calendar, Check, ShieldCheck, Star, X } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { AmazonCTA } from "@/components/amazon-cta";
-import { getReview, reviews } from "@/data/reviews";
+import { getPublishedReviewBySlug, getPublishedReviews } from "@/lib/review-store";
 
 export const Route = createFileRoute("/reviews/$slug")({
-  loader: ({ params }) => {
-    const review = getReview(params.slug);
-    if (!review) throw notFound();
-    return review;
+  head: ({ params }) => {
+    const review = getPublishedReviewBySlug(params.slug);
+    return {
+      meta: review
+        ? [
+            { title: `${review.title} — Pocket Reviews` },
+            { name: "description", content: review.summary.slice(0, 155) },
+            { property: "og:title", content: review.title },
+            { property: "og:description", content: review.summary.slice(0, 155) },
+            { property: "og:image", content: review.image },
+            { name: "twitter:card", content: "summary_large_image" },
+            { name: "twitter:image", content: review.image },
+          ]
+        : [{ title: "Review not found — Pocket Reviews" }],
+    };
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.title} — Pocket Reviews` },
-          { name: "description", content: loaderData.summary.slice(0, 155) },
-          { property: "og:title", content: loaderData.title },
-          { property: "og:description", content: loaderData.summary.slice(0, 155) },
-          { property: "og:image", content: loaderData.image },
-          { name: "twitter:card", content: "summary_large_image" },
-          { name: "twitter:image", content: loaderData.image },
-        ]
-      : [],
-  }),
   notFoundComponent: () => (
     <div className="min-h-screen flex flex-col">
       <SiteHeader />
@@ -62,8 +60,12 @@ function Rating({ value }: { value: number }) {
 }
 
 function ReviewPage() {
-  const review = Route.useLoaderData();
-  const others = reviews.filter((r) => r.slug !== review.slug).slice(0, 3);
+  const { slug } = Route.useParams();
+  const review = getPublishedReviewBySlug(slug);
+  if (!review) throw notFound();
+  const others = getPublishedReviews()
+    .filter((r) => r.slug !== review.slug)
+    .slice(0, 3);
 
   return (
     <div className="min-h-screen flex flex-col">
