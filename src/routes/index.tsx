@@ -72,7 +72,7 @@ function HomePage() {
               <ArrowRight className="h-3 w-3" />
             </Link>
 
-            <h1 className="mt-6 text-[40px] leading-[1.05] md:text-6xl lg:text-7xl font-semibold tracking-[-0.02em] text-gradient">
+            <h1 className="font-display mt-6 text-[44px] leading-[1.02] md:text-7xl lg:text-[88px] font-medium tracking-[-0.03em] text-gradient">
               Buy smarter.<br className="hidden md:block" /> Spend less.
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed">
@@ -131,7 +131,7 @@ function HomePage() {
               <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-accent">
                 <TrendingUp className="h-3.5 w-3.5" /> Editor's picks
               </p>
-              <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">
+              <h2 className="font-display mt-2 text-3xl md:text-5xl font-medium tracking-[-0.02em]">
                 Top picks worth your money
               </h2>
               <p className="text-muted-foreground mt-2 max-w-lg">
@@ -160,7 +160,7 @@ function HomePage() {
               <p className="text-xs font-semibold uppercase tracking-wider text-accent">
                 Why Pocket Reviews
               </p>
-              <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">
+              <h2 className="font-display mt-2 text-3xl md:text-5xl font-medium tracking-[-0.02em]">
                 Reviews built on real use, not press releases.
               </h2>
             </div>
@@ -188,7 +188,7 @@ function HomePage() {
               <p className="text-xs font-semibold uppercase tracking-wider text-accent">
                 Latest
               </p>
-              <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">
+              <h2 className="font-display mt-2 text-3xl md:text-5xl font-medium tracking-[-0.02em]">
                 Fresh reviews
               </h2>
             </div>
@@ -205,7 +205,7 @@ function HomePage() {
           <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-10 md:p-14 text-center shadow-lg">
             <div className="absolute inset-0 bg-hero pointer-events-none" />
             <div className="relative">
-              <h3 className="text-3xl md:text-4xl font-semibold tracking-tight">
+              <h3 className="font-display text-3xl md:text-5xl font-medium tracking-[-0.02em]">
                 Stop overpaying. Start owning what's worth it.
               </h3>
               <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
