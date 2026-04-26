@@ -200,25 +200,31 @@ function HomePage() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="mx-auto max-w-6xl px-6 pb-20">
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-10 md:p-14 text-center shadow-lg">
-            <div className="absolute inset-0 bg-hero pointer-events-none" />
-            <div className="relative">
-              <h3 className="font-display text-3xl md:text-5xl font-medium tracking-[-0.02em]">
-                Stop overpaying. Start owning what's worth it.
-              </h3>
-              <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-                Browse curated reviews under ₹2000 and find your next upgrade in minutes.
-              </p>
-              <div className="mt-7">
-                <Link
-                  to="/reviews"
-                  className="inline-flex items-center gap-2 rounded-xl bg-foreground text-background px-6 py-3 font-semibold shadow-md hover:-translate-y-0.5 hover:shadow-lg transition-all"
+        {/* CTA — full-bleed inline */}
+        <section className="border-y border-border">
+          <div className="mx-auto max-w-[1400px] px-6 py-20 md:py-28">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+              <h3 className="font-display text-[44px] leading-[1] md:text-7xl lg:text-[96px] font-medium tracking-[-0.04em]">
+                <span
+                  className="bg-clip-text text-transparent"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(110deg, var(--color-foreground) 0%, var(--color-accent) 45%, var(--color-foreground) 100%)",
+                  }}
                 >
-                  Explore reviews <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
+                  Stop overpaying.
+                </span>{" "}
+                <span className="font-display-italic text-muted-foreground">
+                  Start owning what's worth it.
+                </span>
+              </h3>
+              <Link
+                to="/reviews"
+                className="group inline-flex shrink-0 items-center gap-2 rounded-full bg-foreground text-background px-7 py-3.5 font-semibold shadow-md hover:-translate-y-0.5 hover:shadow-lg transition-all"
+              >
+                Explore reviews
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
             </div>
           </div>
         </section>
