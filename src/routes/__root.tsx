@@ -29,13 +29,20 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Pocket Reviews — Honest Budget Product Reviews" },
+      { title: "Pocket Reviews" },
       {
         name: "description",
         content: "Honest reviews of budget products under ₹2000.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "Pocket Reviews" },
+      { name: "twitter:title", content: "Pocket Reviews" },
+      { name: "description", content: "Pocket Reviews Hub is a modern, mobile-friendly review blog for budget products." },
+      { property: "og:description", content: "Pocket Reviews Hub is a modern, mobile-friendly review blog for budget products." },
+      { name: "twitter:description", content: "Pocket Reviews Hub is a modern, mobile-friendly review blog for budget products." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e0ea453f-69fe-46b5-947f-f202f85b1e42/id-preview-2bab6661--c8405d15-919f-4a05-9942-7c7177824a4f.lovable.app-1777181587560.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e0ea453f-69fe-46b5-947f-f202f85b1e42/id-preview-2bab6661--c8405d15-919f-4a05-9942-7c7177824a4f.lovable.app-1777181587560.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
