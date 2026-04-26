@@ -216,6 +216,17 @@
     mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
     -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
   }
+  .font-display {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-variation-settings: "opsz" 96, "SOFT" 50;
+    letter-spacing: -0.02em;
+  }
+  .font-display-italic {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-variation-settings: "opsz" 96, "SOFT" 100;
+  }
 }
 
 @keyframes fade-up {
