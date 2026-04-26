@@ -107,24 +107,34 @@ function AdminPage() {
       image: form.image,
     };
 
-    if (editingSlug) {
-      const updated = await updateAdminReview(editingSlug, payload, email);
-      setStatus(`Updated: ${updated.title}`);
-      setEditingSlug(null);
-    } else {
-      const newReview = await createAdminReview(payload, email);
-      setStatus(`Draft created: ${newReview.title}. Publish it when ready.`);
-    }
+    try {
+      if (editingSlug) {
+        const updated = await updateAdminReview(editingSlug, payload, email);
+        setStatus(`Updated: ${updated.title}`);
+        setEditingSlug(null);
+      } else {
+        const newReview = await createAdminReview(payload, email);
+        setStatus(`Draft created: ${newReview.title}. Publish it when ready.`);
+      }
 
-    setForm(initialForm);
-    await refreshReviews();
+      setForm(initialForm);
+      await refreshReviews();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to save review.";
+      setStatus(`Save failed: ${message}`);
+    }
   }
 
   async function handlePublish(slug: string) {
     if (!email) return;
-    await setReviewPublished(slug, true, email);
-    setStatus("Review published. It is now visible in the public reviews section.");
-    await refreshReviews();
+    try {
+      await setReviewPublished(slug, true, email);
+      setStatus("Review published. It is now visible in the public reviews section.");
+      await refreshReviews();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to publish review.";
+      setStatus(`Publish failed: ${message}`);
+    }
   }
 
   function handleEdit(review: ManagedReview) {
