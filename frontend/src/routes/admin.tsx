@@ -10,8 +10,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { isAdminEmail } from "@/lib/auth";
 import {
   createAdminReview,
+  getManagedReviewBySlug,
   getManagedReviews,
   setReviewPublished,
+  updateAdminReview,
   type ManagedReview,
 } from "@/lib/review-store";
 
@@ -63,6 +65,8 @@ function AdminPage() {
 
   const [form, setForm] = useState<FormState>(initialForm);
   const [reviews, setReviews] = useState<ManagedReview[]>([]);
+  const [editingSlug, setEditingSlug] = useState<string | null>(null);
+  const [previewReview, setPreviewReview] = useState<ManagedReview | null>(null);
   const [status, setStatus] = useState("");
 
   const customReviews = useMemo(
@@ -89,24 +93,29 @@ function AdminPage() {
       return;
     }
 
-    const newReview = await createAdminReview(
-      {
-        title: form.title,
-        category: form.category,
-        shortDescription: form.shortDescription,
-        price: form.price,
-        rating,
-        summary: form.summary,
-        pros: splitLines(form.pros),
-        cons: splitLines(form.cons),
-        detailed: splitLines(form.detailed),
-        amazonUrl: form.amazonUrl,
-        image: form.image,
-      },
-      email,
-    );
+    const payload = {
+      title: form.title,
+      category: form.category,
+      shortDescription: form.shortDescription,
+      price: form.price,
+      rating,
+      summary: form.summary,
+      pros: splitLines(form.pros),
+      cons: splitLines(form.cons),
+      detailed: splitLines(form.detailed),
+      amazonUrl: form.amazonUrl,
+      image: form.image,
+    };
 
-    setStatus(`Draft created: ${newReview.title}. Publish it when ready.`);
+    if (editingSlug) {
+      const updated = await updateAdminReview(editingSlug, payload, email);
+      setStatus(`Updated: ${updated.title}`);
+      setEditingSlug(null);
+    } else {
+      const newReview = await createAdminReview(payload, email);
+      setStatus(`Draft created: ${newReview.title}. Publish it when ready.`);
+    }
+
     setForm(initialForm);
     await refreshReviews();
   }
@@ -116,6 +125,35 @@ function AdminPage() {
     await setReviewPublished(slug, true, email);
     setStatus("Review published. It is now visible in the public reviews section.");
     await refreshReviews();
+  }
+
+  function handleEdit(review: ManagedReview) {
+    setEditingSlug(review.slug);
+    setForm({
+      title: review.title,
+      category: review.category,
+      shortDescription: review.shortDescription,
+      price: review.price,
+      rating: String(review.rating),
+      summary: review.summary,
+      pros: review.pros.join("\n"),
+      cons: review.cons.join("\n"),
+      detailed: review.detailed.join("\n"),
+      amazonUrl: review.amazonUrl,
+      image: review.image,
+    });
+    setStatus(`Editing review: ${review.title}`);
+  }
+
+  async function handlePreviewDraft(slug: string) {
+    if (!email) return;
+    try {
+      const review = await getManagedReviewBySlug(slug, email);
+      setPreviewReview(review ?? null);
+    } catch {
+      setPreviewReview(null);
+      setStatus("Could not load draft preview.");
+    }
   }
 
   useEffect(() => {
@@ -162,7 +200,9 @@ function AdminPage() {
                 <p className="text-xs font-semibold uppercase tracking-wider text-accent">
                   Admin dashboard
                 </p>
-                <h1 className="mt-2 text-3xl font-semibold tracking-tight">Create product review blog</h1>
+                <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+                  {editingSlug ? "Edit product review blog" : "Create product review blog"}
+                </h1>
                 <p className="mt-2 text-sm text-muted-foreground">
                   Signed in as {email}. New reviews start as draft. Publish to show them in the public
                   review list.
@@ -268,8 +308,22 @@ function AdminPage() {
                     />
                   </Field>
                   <Button type="submit" className="w-full md:w-fit">
-                    Save draft review
+                    {editingSlug ? "Update review" : "Save draft review"}
                   </Button>
+                  {editingSlug ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full md:w-fit"
+                      onClick={() => {
+                        setEditingSlug(null);
+                        setForm(initialForm);
+                        setStatus("Edit cancelled.");
+                      }}
+                    >
+                      Cancel edit
+                    </Button>
+                  ) : null}
                 </form>
               </section>
 
@@ -291,13 +345,32 @@ function AdminPage() {
                           </p>
                         </div>
                         <div className="flex gap-2">
-                          <Link
-                            to="/reviews/$slug"
-                            params={{ slug: review.slug }}
-                            className="inline-flex rounded-md border border-input px-3 py-1.5 text-sm"
+                          {review.published ? (
+                            <Link
+                              to="/reviews/$slug"
+                              params={{ slug: review.slug }}
+                              className="inline-flex rounded-md border border-input px-3 py-1.5 text-sm"
+                            >
+                              Open
+                            </Link>
+                          ) : (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="h-8"
+                              onClick={() => handlePreviewDraft(review.slug)}
+                            >
+                              View draft
+                            </Button>
+                          )}
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="h-8"
+                            onClick={() => handleEdit(review)}
                           >
-                            Open
-                          </Link>
+                            Edit
+                          </Button>
                           {!review.published ? (
                             <Button
                               type="button"
@@ -313,6 +386,23 @@ function AdminPage() {
                   )}
                 </div>
               </section>
+              {previewReview ? (
+                <section className="rounded-2xl border border-border bg-card p-6">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-semibold">Draft preview</h2>
+                    <Button type="button" variant="outline" onClick={() => setPreviewReview(null)}>
+                      Close preview
+                    </Button>
+                  </div>
+                  <p className="mt-4 text-sm text-muted-foreground">/{previewReview.slug}</p>
+                  <h3 className="mt-2 text-2xl font-semibold">{previewReview.title}</h3>
+                  <p className="mt-2 text-muted-foreground">{previewReview.shortDescription}</p>
+                  <div className="mt-4 grid gap-2">
+                    <p className="text-sm font-medium">Summary</p>
+                    <p className="text-sm text-muted-foreground">{previewReview.summary}</p>
+                  </div>
+                </section>
+              ) : null}
             </div>
           )}
         </SignedIn>

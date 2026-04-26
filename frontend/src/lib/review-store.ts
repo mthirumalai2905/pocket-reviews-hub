@@ -26,6 +26,13 @@ export async function getManagedReviews() {
   return data.reviews;
 }
 
+export async function getManagedReviewBySlug(slug: string, authorEmail: string) {
+  const data = await request<{ reviews: ManagedReview[] }>(
+    `/api/reviews?slug=${encodeURIComponent(slug)}&includeDraft=true&authorEmail=${encodeURIComponent(authorEmail)}`,
+  );
+  return data.reviews[0];
+}
+
 export async function getPublishedReviews() {
   const data = await request<{ reviews: ManagedReview[] }>("/api/reviews?published=true");
   return data.reviews;
@@ -43,6 +50,23 @@ export async function createAdminReview(input: ReviewDraftInput, authorEmail: st
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
+      ...input,
+      authorEmail,
+    }),
+  });
+  return data.review;
+}
+
+export async function updateAdminReview(
+  slug: string,
+  input: ReviewDraftInput,
+  authorEmail: string,
+) {
+  const data = await request<{ review: ManagedReview }>("/api/reviews", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      slug,
       ...input,
       authorEmail,
     }),

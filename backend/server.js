@@ -40,7 +40,11 @@ app.get("/health", (_req, res) => {
 app.get("/api/reviews", async (req, res) => {
   const collection = await getCollection();
   const query = {};
-  if (req.query.published === "true") query.published = true;
+  const includeDraft = req.query.includeDraft === "true";
+  const requestedEmail = String(req.query.authorEmail || "").toLowerCase();
+  const isAdminRequest = ADMIN_EMAIL && requestedEmail === ADMIN_EMAIL;
+
+  if (req.query.published === "true" && !(includeDraft && isAdminRequest)) query.published = true;
   if (typeof req.query.slug === "string" && req.query.slug) query.slug = req.query.slug;
 
   const reviews = await collection
@@ -100,6 +104,46 @@ app.patch("/api/reviews", async (req, res) => {
   const collection = await getCollection();
   await collection.updateOne({ slug }, { $set: { published } });
   res.json({ ok: true });
+});
+
+app.put("/api/reviews", async (req, res) => {
+  const body = req.body || {};
+  const authorEmail = String(body.authorEmail || "").toLowerCase();
+  if (!ADMIN_EMAIL || authorEmail !== ADMIN_EMAIL) {
+    return res.status(403).json({ message: "Unauthorized" });
+  }
+
+  const slug = String(body.slug || "");
+  if (!slug) {
+    return res.status(400).json({ message: "Missing slug" });
+  }
+
+  const collection = await getCollection();
+  const existing = await collection.findOne({ slug }, { projection: { _id: 0 } });
+  if (!existing) {
+    return res.status(404).json({ message: "Review not found" });
+  }
+
+  const updateDoc = {
+    title: String(body.title || existing.title),
+    category: String(body.category || existing.category),
+    shortDescription: String(body.shortDescription || existing.shortDescription),
+    image:
+      typeof body.image === "string" && body.image.trim()
+        ? body.image
+        : existing.image,
+    price: String(body.price || existing.price),
+    rating: Number(body.rating ?? existing.rating),
+    summary: String(body.summary || existing.summary),
+    pros: Array.isArray(body.pros) ? body.pros : existing.pros,
+    cons: Array.isArray(body.cons) ? body.cons : existing.cons,
+    detailed: Array.isArray(body.detailed) ? body.detailed : existing.detailed,
+    amazonUrl: String(body.amazonUrl || existing.amazonUrl),
+  };
+
+  await collection.updateOne({ slug }, { $set: updateDoc });
+  const review = await collection.findOne({ slug }, { projection: { _id: 0 } });
+  res.json({ review });
 });
 
 app.listen(PORT, () => {
