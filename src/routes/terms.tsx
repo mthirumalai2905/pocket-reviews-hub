@@ -50,7 +50,7 @@ function TermsPage() {
           <div className="absolute inset-0 bg-hero pointer-events-none" />
           <div className="relative mx-auto max-w-3xl px-6 py-16 md:py-20 animate-fade-up">
             <p className="text-xs font-semibold uppercase tracking-wider text-accent">Legal</p>
-            <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight text-gradient">
+            <h1 className="font-display mt-2 text-4xl md:text-6xl font-medium tracking-[-0.03em] text-gradient">
               Terms &amp; Conditions
             </h1>
             <p className="mt-4 text-muted-foreground leading-relaxed">

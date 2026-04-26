@@ -52,7 +52,7 @@ function AboutPage() {
             <p className="text-xs font-semibold uppercase tracking-wider text-accent">
               About us
             </p>
-            <h1 className="mt-2 text-4xl md:text-6xl font-semibold tracking-tight text-gradient">
+            <h1 className="font-display mt-2 text-4xl md:text-7xl font-medium tracking-[-0.03em] text-gradient">
               Reviews you can actually trust.
             </h1>
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed">

@@ -90,7 +90,7 @@ function ReviewPage() {
                     <ShieldCheck className="h-3 w-3" /> Editor's pick
                   </span>
                 </div>
-                <h1 className="mt-4 text-3xl md:text-5xl font-semibold tracking-tight leading-[1.1]">
+                <h1 className="font-display mt-4 text-3xl md:text-5xl font-medium tracking-[-0.02em] leading-[1.05]">
                   {review.title}
                 </h1>
                 <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed">
@@ -213,7 +213,7 @@ function ReviewPage() {
             <p className="text-xs font-semibold uppercase tracking-wider text-accent">
               Deep dive
             </p>
-            <h2 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight">
+            <h2 className="font-display mt-2 text-2xl md:text-4xl font-medium tracking-[-0.02em]">
               The detailed review
             </h2>
             <div className="mt-6 space-y-5 text-foreground/90 leading-[1.75] text-[15px]">
@@ -230,7 +230,7 @@ function ReviewPage() {
               <p className="text-xs font-semibold uppercase tracking-wider text-accent">
                 Final verdict
               </p>
-              <h3 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight">
+              <h3 className="font-display mt-2 text-2xl md:text-3xl font-medium tracking-[-0.02em]">
                 {review.title} is worth every rupee.
               </h3>
               <p className="mt-3 text-muted-foreground max-w-md mx-auto">

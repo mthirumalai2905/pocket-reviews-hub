@@ -5,8 +5,8 @@ export function SiteFooter() {
     <footer className="mt-32 border-t border-border/60">
       <div className="mx-auto max-w-6xl px-6 py-14 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
-          <p className="font-semibold tracking-tight">
-            Pocket Reviews<span className="text-accent">.</span>
+          <p className="font-display text-lg font-medium tracking-tight">
+            Pocket <span className="font-display-italic text-accent">Reviews</span><span className="text-accent">.</span>
           </p>
           <p className="mt-3 max-w-sm text-sm text-muted-foreground leading-relaxed">
             Honest, hands-on reviews of budget products under ₹2000. Helping you spend smarter,

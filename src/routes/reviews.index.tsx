@@ -35,7 +35,7 @@ function ReviewsIndex() {
             <p className="text-xs font-semibold uppercase tracking-wider text-accent">
               The library
             </p>
-            <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight text-gradient">
+            <h1 className="font-display mt-2 text-4xl md:text-6xl font-medium tracking-[-0.03em] text-gradient">
               All reviews
             </h1>
             <p className="mt-3 text-muted-foreground max-w-xl">
