@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ReviewCard } from "@/components/review-card";
-import { getPublishedReviews } from "@/lib/review-store";
+import { getPublishedReviews, type ManagedReview } from "@/lib/review-store";
 
 export const Route = createFileRoute("/reviews/")({
   head: () => ({
@@ -23,7 +24,14 @@ export const Route = createFileRoute("/reviews/")({
 });
 
 function ReviewsIndex() {
-  const reviews = getPublishedReviews();
+  const [reviews, setReviews] = useState<ManagedReview[]>([]);
+
+  useEffect(() => {
+    getPublishedReviews()
+      .then(setReviews)
+      .catch(() => setReviews([]));
+  }, []);
+
   const categories = Array.from(new Set(reviews.map((r) => r.category)));
   return (
     <div className="min-h-screen flex flex-col">

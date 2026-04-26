@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { ArrowRight, BadgeCheck, IndianRupee, Sparkles, Star, TrendingUp } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ReviewCard } from "@/components/review-card";
-import { getPublishedReviews } from "@/lib/review-store";
+import { getPublishedReviews, type ManagedReview } from "@/lib/review-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -50,7 +51,14 @@ const features = [
 ];
 
 function HomePage() {
-  const reviews = getPublishedReviews();
+  const [reviews, setReviews] = useState<ManagedReview[]>([]);
+
+  useEffect(() => {
+    getPublishedReviews()
+      .then(setReviews)
+      .catch(() => setReviews([]));
+  }, []);
+
   const featured = reviews.slice(0, 3);
 
   return (
@@ -205,7 +213,7 @@ function HomePage() {
         <section className="border-y border-border">
           <div className="mx-auto max-w-[1400px] px-6 py-20 md:py-28">
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
-              <h3 className="font-display text-[44px] leading-[1] md:text-7xl lg:text-[96px] font-medium tracking-[-0.04em]">
+              <h3 className="font-display text-[44px] leading-none md:text-7xl lg:text-[96px] font-medium tracking-[-0.04em]">
                 <span
                   className="bg-clip-text text-transparent"
                   style={{

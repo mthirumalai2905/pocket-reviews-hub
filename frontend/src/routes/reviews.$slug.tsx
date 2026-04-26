@@ -1,27 +1,19 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Calendar, Check, ShieldCheck, Star, X } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { AmazonCTA } from "@/components/amazon-cta";
-import { getPublishedReviewBySlug, getPublishedReviews } from "@/lib/review-store";
+import {
+  getPublishedReviewBySlug,
+  getPublishedReviews,
+  type ManagedReview,
+} from "@/lib/review-store";
 
 export const Route = createFileRoute("/reviews/$slug")({
-  head: ({ params }) => {
-    const review = getPublishedReviewBySlug(params.slug);
-    return {
-      meta: review
-        ? [
-            { title: `${review.title} — Pocket Reviews` },
-            { name: "description", content: review.summary.slice(0, 155) },
-            { property: "og:title", content: review.title },
-            { property: "og:description", content: review.summary.slice(0, 155) },
-            { property: "og:image", content: review.image },
-            { name: "twitter:card", content: "summary_large_image" },
-            { name: "twitter:image", content: review.image },
-          ]
-        : [{ title: "Review not found — Pocket Reviews" }],
-    };
-  },
+  head: () => ({
+    meta: [{ title: "Review — Pocket Reviews" }],
+  }),
   notFoundComponent: () => (
     <div className="min-h-screen flex flex-col">
       <SiteHeader />
@@ -61,11 +53,67 @@ function Rating({ value }: { value: number }) {
 
 function ReviewPage() {
   const { slug } = Route.useParams();
-  const review = getPublishedReviewBySlug(slug);
-  if (!review) throw notFound();
-  const others = getPublishedReviews()
-    .filter((r) => r.slug !== review.slug)
-    .slice(0, 3);
+  const [review, setReview] = useState<ManagedReview | null>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [others, setOthers] = useState<ManagedReview[]>([]);
+
+  useEffect(() => {
+    setLoaded(false);
+    getPublishedReviewBySlug(slug)
+      .then((item) => {
+        setReview(item ?? null);
+      })
+      .catch(() => {
+        setReview(null);
+      })
+      .finally(() => {
+        setLoaded(true);
+      });
+  }, [slug]);
+
+  useEffect(() => {
+    if (!review) return;
+    getPublishedReviews()
+      .then((items) => {
+        setOthers(items.filter((r) => r.slug !== review.slug).slice(0, 3));
+      })
+      .catch(() => {
+        setOthers([]);
+      });
+  }, [review]);
+
+  if (!loaded) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <SiteHeader />
+        <main className="flex-1 flex items-center justify-center px-6 py-24 text-center">
+          <div>
+            <h1 className="text-3xl font-semibold">Loading review...</h1>
+            <p className="mt-2 text-muted-foreground">Please wait while we fetch this review.</p>
+          </div>
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
+
+  if (!review) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <SiteHeader />
+        <main className="flex-1 flex items-center justify-center px-6 py-24 text-center">
+          <div>
+            <h1 className="text-3xl font-semibold">Review not found</h1>
+            <p className="mt-2 text-muted-foreground">This review does not exist or is not published.</p>
+            <Link to="/reviews" className="mt-6 inline-block text-accent hover:underline">
+              ← Back to all reviews
+            </Link>
+          </div>
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -128,7 +176,7 @@ function ReviewPage() {
                     alt={review.title}
                     width={1024}
                     height={768}
-                    className="w-full aspect-[4/3] object-cover"
+                    className="w-full aspect-4/3 object-cover"
                   />
                   <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-xl glass border border-border px-3 py-2 text-xs">
                     <span className="font-medium">Verified hands-on review</span>

@@ -1,6 +1,6 @@
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
@@ -62,7 +62,7 @@ function AdminPage() {
   const isAdmin = isAdminEmail(email);
 
   const [form, setForm] = useState<FormState>(initialForm);
-  const [reviews, setReviews] = useState<ManagedReview[]>(() => getManagedReviews());
+  const [reviews, setReviews] = useState<ManagedReview[]>([]);
   const [status, setStatus] = useState("");
 
   const customReviews = useMemo(
@@ -74,11 +74,12 @@ function AdminPage() {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
-  function refreshReviews() {
-    setReviews(getManagedReviews());
+  async function refreshReviews() {
+    const items = await getManagedReviews();
+    setReviews(items);
   }
 
-  function handleCreateReview(event: React.FormEvent<HTMLFormElement>) {
+  async function handleCreateReview(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!email || !isAdmin) return;
 
@@ -88,7 +89,7 @@ function AdminPage() {
       return;
     }
 
-    const newReview = createAdminReview(
+    const newReview = await createAdminReview(
       {
         title: form.title,
         category: form.category,
@@ -107,14 +108,21 @@ function AdminPage() {
 
     setStatus(`Draft created: ${newReview.title}. Publish it when ready.`);
     setForm(initialForm);
-    refreshReviews();
+    await refreshReviews();
   }
 
-  function handlePublish(slug: string) {
-    setReviewPublished(slug, true);
+  async function handlePublish(slug: string) {
+    if (!email) return;
+    await setReviewPublished(slug, true, email);
     setStatus("Review published. It is now visible in the public reviews section.");
-    refreshReviews();
+    await refreshReviews();
   }
+
+  useEffect(() => {
+    refreshReviews().catch(() => {
+      setStatus("Could not load reviews from database.");
+    });
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
